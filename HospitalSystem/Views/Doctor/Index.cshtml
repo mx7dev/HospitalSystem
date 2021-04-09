@@ -1,0 +1,300 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Layout/_Layout.cshtml";
+}
+@using System.Globalization;
+
+<!-- JQuery DataTable Css -->
+<link href="~/assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/assets/css/main.css" />
+
+<link rel="stylesheet" href="~/assets/plugins/dropzone/dropzone.css"> <!-- Dropzone Css -->
+<link rel="stylesheet" href="~/assets/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" /><!-- Bootstrap Material Datetime Picker Css -->
+<!-- Wait Me Css -->
+<link rel="stylesheet" href="~/assets/plugins/waitme/waitMe.css" />
+<link href="~/assets/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+
+
+
+<section class="content home">
+    <div class="container-fluid">
+        <div class="block-header" style="text-align: center; margin: 0px !important">
+            <h1>Doctores</h1>
+            @*<small class="text-muted">Sección Doctores >> Doctores</small>*@
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="header">
+                        @*<h2>Listado de Doctores</h2>*@
+                        <button type="button" class="btn btn-raised btn-default waves-effect" onclick="doctorObject.AgregarDoctor()">Agregar</button>
+
+                    </div>
+                    <div class="body table-responsive">
+                        <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Nombres</th>
+                                    <th>Especialidad</th>
+                                    <th>Email</th>
+                                    <th>Telefono</th>
+                                    <th>Fecha Nacimiento</th>
+                                    <th>Fecha Registro</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var doctor in ViewBag.ListDoctor)
+                                {
+                                    <tr>
+                                        <td>@CultureInfo.InvariantCulture.TextInfo.ToTitleCase(doctor.SFIRSTNAME)  @CultureInfo.InvariantCulture.TextInfo.ToTitleCase(@doctor.SLASTNAME)</td>
+                                        <td>@doctor.SSPECIALITY</td>
+                                        <td>@doctor.SEMAIL</td>
+                                        <td style="text-align: center">@doctor.NPHONE</td>
+                                        <td style="text-align: center">@Convert.ToDateTime(doctor.DBIRTHDATE).ToString("dd/MM/yyyy")</td>
+                                        <td style="text-align: center">@Convert.ToDateTime(doctor.DREGISTER).ToString("dd/MM/yyyy")</td>
+                                        <td width="100px" style="text-align: center">
+                                            <button type="button" title="Editar" onclick="doctorObject.EditDoctor(@doctor.NIDDOCTOR)" class="btn btn-raised btn-primary" style="padding: 1px 3px !important"> <i class="material-icons">mode_edit</i> </button>
+                                            <button type="button" title="Ver" onclick="doctorObject.ViewDoctor(@doctor.NIDDOCTOR)" class="btn btn-raised btn-primary" style="padding: 1px 3px !important"> <i class="material-icons">pageview</i> </button>
+                                            <button type="button" title="Eliminar" onclick="doctorObject.DeleteDoctor(@doctor.NIDDOCTOR)" class="btn btn-raised btn-danger" style="padding: 1px 3px !important"> <i class="material-icons">delete</i> </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal Doctor Edit -->
+<div class="modal fade" id="largeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="largeModalLabel">Agregar Doctor</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="card">
+                        <div class="body">
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="sfirstName" placeholder="Primer Nombre">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="sSecondName" placeholder="Segundo Nombre">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="slastName" placeholder="Ap. Paterno">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="slastName1" placeholder="Ap Materno">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="datepicker form-control" id="dbrithDate" placeholder="Fec. Nacimiento">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group drop-custum">
+                                        <select class="form-control show-tick" id="sgender">
+                                            <option value="">-- Genero --</option>
+                                            <option value="M">Masculino</option>
+                                            <option value="F">Femenino</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="sspeciality" placeholder="Especialidad">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="number" class="form-control" id="sphone" maxlength="9" placeholder="Telefono">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-9">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="semail" placeholder="Email">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="swebSite" placeholder="Sitio Web">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <form action="/" id="frmFileUpload" class="dropzone" method="post" enctype="multipart/form-data">
+                                        <div class="dz-message">
+                                            <div class="drag-icon-cph"> <i class="material-icons">touch_app</i> </div>
+                                            <h3>Drop files here or click to upload.</h3>
+                                            <em>(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</em>
+                                        </div>
+                                        <div class="fallback">
+                                            <input name="file" type="file" id="fileUploadDoctor" />
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <textarea rows="4" class="form-control no-resize" id="resume" placeholder="Ingrese un resumen acerca de usted..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="header">
+                            <h2>Información acerca de la cuenta <small></small> </h2>
+                        </div>
+                        <div class="body">
+                            <div class="row clearfix">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" placeholder="Usuario" id="user">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="password" class="form-control" placeholder="Contraseña" id="password">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="password" class="form-control" placeholder="Confirmar Contraseña" id="confirmpassword">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnSaveDoctor" class="btn btn-raised btn-primary waves-effect">Guardar</button>
+                <button type="button" class="btn btn-raised btn-primary waves-effect" data-dismiss="modal">Salir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Doctor View-->
+<div class="modal fade" id="modalView" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-body" style="padding-bottom: 0px !important">
+                <div class="row clearfix">
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class=" card patient-profile">
+                            <img id="imageProfileDoctor" style="width:200px; height:200px" class="img-fluid" alt="">
+                        </div>
+                        <div class="card">
+                            <div class="header">
+                                <h2>Acerca del Doctor</h2>
+                            </div>
+                            <div class="body">
+                                <strong>Nombre</strong>
+                                <p id="snameViewDoctor"></p>
+                                <strong>Fecha Nacimiento</strong>
+                                <p id="dbirthdateViewDoctor"></p>
+                                <strong>Especialidad</strong>
+                                <p id="specialityViewDoctor"></p>
+                                <strong>Email</strong>
+                                <p id="semailViewDoctor"></p>
+                                <strong>Telefono</strong>
+                                <p id="sphoneViewDoctor"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-12">
+                        <div class="card">
+                            <div class="body">
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#report">Descripción</a></li>
+                                </ul>
+
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane in active" id="report">
+                                        <div class="wrap-reset">
+                                            <div class="mypost-list">
+                                                <div class="post-box">
+                                                    <p id="resumeViewDoctor"></p>
+                                                </div>                                                                                                
+                                            </div>
+                                        </div>
+                                    </div>                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding-top: 0px !important">
+                <button type="button" class="btn btn-raised btn-primary waves-effect" data-dismiss="modal">Salir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/assets/plugins/autosize/autosize.js"></script> <!-- Autosize Plugin Js -->
+<script src="~/assets/plugins/momentjs/moment.js"></script> <!-- Moment Plugin Js -->
+<script src="~/assets/plugins/dropzone/dropzone.js"></script> <!-- Dropzone Plugin Js -->
+<script src="~/assets/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+<script src="~/assets/plugins/fullcalendar/lang/es.js"></script>
+
+<script src="~/assets/bundles/datatablescripts.bundle.js"></script><!-- Jquery DataTable Plugin Js -->
+
+<script src="~/assets/js/morphing.js"></script><!-- Custom Js -->
+<script src="~/assets/js/pages/tables/jquery-datatable.js"></script>
+
+<script src="~/assets/plugins/bootstrap-notify/bootstrap-notify.js"></script> <!-- Bootstrap Notify Plugin Js -->
+<script src="~/assets/plugins/sweetalert/sweetalert.min.js"></script> <!-- SweetAlert Plugin Js -->
+
+<script src="~/js/Doctor.js"></script>

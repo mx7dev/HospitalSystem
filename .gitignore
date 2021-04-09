@@ -3,3 +3,6 @@
 ################################################################################
 
 /HospitalSystem/bin
+/HospitalSystem/obj
+/HospitalSystem.Backend/bin
+/HospitalSystem.Backend/obj

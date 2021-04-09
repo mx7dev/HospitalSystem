@@ -1,0 +1,81 @@
+﻿
+@{
+    Layout = null;
+}
+
+@model HospitalSystem.Model.LoginViewModel
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <title>:: Clínica Lobaton ::</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="~/assets/plugins/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" type="text/css">
+
+    <!-- Custom Css -->
+    <link rel="stylesheet" href="~/assets/css/main.css" />
+
+</head>
+
+<body class="theme-cyan authentication">
+    <div class="container">
+        <div class="card-top"></div>
+        <div class="card">
+            <h1 class="title"><span>Clínica Lobaton</span>Login</h1>
+            <div class="body">
+                <form method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="input-group icon before_span">
+                        <span class="input-group-addon"> <i class="zmdi zmdi-account"></i> </span>
+                        <div class="form-line">
+                            @*<input type="text" class="form-control" name="username" placeholder="Username" required autofocus>*@
+                            @Html.TextBoxFor(m => m.Username, new { @class = "form-control", placeholder = "Usuario"})
+                            @*@Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })*@
+                        </div>
+                    </div><br />
+                    <div class="input-group icon before_span">
+                        <span class="input-group-addon"> <i class="zmdi zmdi-lock"></i> </span>
+                        <div class="form-line">
+                            @*<input type="password" class="form-control" name="password" placeholder="Password" required>*@
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Contraseña" })
+                            @*@Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })*@
+                        </div>
+                    </div><br />
+                    @if (TempData["Message"] != null)
+                    {
+                        <div style="text-align: center">
+                            <span style="color:red;">@TempData["Message"].ToString()</span>
+                        </div><br />
+                    }
+                    <div>
+                        <!--<div class="">-->
+                            @*<input type="checkbox" name="rememberme" id="rememberme" class="filled-in chk-col-pink">*@
+                            <!--@Html.CheckBoxFor(x => x.isPersistent, new { @class = "filled-in chk-col-pink" })
+                            <label for="rememberme">Recuerdame</label>
+                        </div>-->
+                        <div class="text-center">
+                            @*<a formaction="/Login/OnPostLogIn" class="btn btn-raised waves-effect g-bg-cyan">INGRESAR</a>*@
+                            @*<a asp-page-handler="LogIn" class="btn btn-raised waves-effect g-bg-cyan">INGRESAR</a>*@
+                            <button formaction="/Login/OnPostLogIn" class="btn btn-raised waves-effect g-bg-cyan">INGRESAR</button>
+                            @*<input type="submit" value="Submit" />*@
+                            @*<a href="sign-up.html" class="btn btn-raised waves-effect">SIGN UP</a>*@
+                        </div>
+                        <div class="text-center"> @*<a href="forgot-password.html">Forgot Password?</a>*@</div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="theme-bg"></div>
+
+    <!-- Jquery Core Js -->
+    @*<script src="~/assets/bundles/libscripts.bundle.js"></script>*@ <!-- Lib Scripts Plugin Js -->
+    @*<script src="~/assets/bundles/vendorscripts.bundle.js"></script>*@ <!-- Lib Scripts Plugin Js -->
+
+    @*<script src="~/assets/bundles/mainscripts.bundle.js"></script>*@<!-- Custom Js -->
+</body>
+</html>

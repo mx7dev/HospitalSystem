@@ -1,0 +1,378 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Layout/_Layout.cshtml";
+}
+
+@using System.Globalization;
+
+<!-- JQuery DataTable Css -->
+<link href="~/assets/plugins/jquery-datatable/dataTables.bootstrap4.min.css" rel="stylesheet">
+<link rel="stylesheet" href="~/assets/css/main.css" />
+
+<link rel="stylesheet" href="~/assets/plugins/dropzone/dropzone.css"> <!-- Dropzone Css -->
+<link rel="stylesheet" href="~/assets/plugins/bootstrap-material-datetimepicker/css/bootstrap-material-datetimepicker.css" /><!-- Bootstrap Material Datetime Picker Css -->
+<!-- Wait Me Css -->
+<link rel="stylesheet" href="~/assets/plugins/waitme/waitMe.css" />
+<link href="~/assets/plugins/sweetalert/sweetalert.css" rel="stylesheet" />
+
+<section class="content home">
+    <div class="container-fluid">
+        <div class="block-header" style="text-align: center; margin: 0px !important">
+            <h1>Pacientes</h1>
+            @*<small class="text-muted">Sección Doctores >> Doctores</small>*@
+        </div>
+        <div class="row clearfix">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="card">
+                    <div class="header">
+                        @*<h2>Listado de Doctores</h2>*@
+                        <button type="button" class="btn btn-raised btn-default waves-effect" onclick="patientObject.AgregarPatient()">Agregar</button>
+
+                    </div>
+                    <div class="body table-responsive">
+                        <table class="table table-bordered table-striped table-hover js-basic-example dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Nombres</th>
+                                    <th>Email</th>
+                                    <th>Telefono</th>
+                                    <th>Fecha Nacimiento</th>
+                                    <th>Fecha Registro</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.ListPatient != null)
+                                {
+                                    @foreach (var doctor in ViewBag.ListPatient)
+                                    {
+                                        <tr>
+                                            <td>@CultureInfo.InvariantCulture.TextInfo.ToTitleCase(doctor.SFIRSTNAME)  @CultureInfo.InvariantCulture.TextInfo.ToTitleCase(@doctor.SLASTNAME)</td>
+                                            <td>@doctor.SEMAIL</td>
+                                            <td style="text-align: center">@doctor.NPHONE</td>
+                                            <td style="text-align: center">@Convert.ToDateTime(doctor.DBIRTHDATE).ToString("dd/MM/yyyy")</td>
+                                            <td style="text-align: center">@Convert.ToDateTime(doctor.DREGISTER).ToString("dd/MM/yyyy")</td>
+                                            <td width="100px" style="text-align: center">
+                                                <button type="button" title="Editar" onclick="patientObject.EditPatient(@doctor.NIDPATIENT)" class="btn btn-raised btn-primary" style="padding: 1px 3px !important"> <i class="material-icons">mode_edit</i> </button>
+                                                <button type="button" title="Ver" onclick="patientObject.ViewPatient(@doctor.NIDPATIENT)" class="btn btn-raised btn-primary" style="padding: 1px 3px !important"> <i class="material-icons">pageview</i> </button>
+                                                <button type="button" title="Eliminar" onclick="patientObject.DeletePatient(@doctor.NIDPATIENT)" class="btn btn-raised btn-danger" style="padding: 1px 3px !important"> <i class="material-icons">delete</i> </button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal Doctor -->
+<div class="modal fade" id="largeModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="largeModalLabel">Agregar Paciente</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="card">
+                        <div class="body">
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="sfirstName" placeholder="Primer Nombre">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="sSecondName" placeholder="Segundo Nombre">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="slastName" placeholder="Ap. Paterno">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="slastName1" placeholder="Ap Materno">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row clearfix">
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="datepicker form-control" id="dbrithDate" placeholder="Fec. Nacimiento">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group drop-custum">
+                                        <select class="form-control show-tick" id="sgender">
+                                            <option value="">-- Genero --</option>
+                                            <option value="M">Masculino</option>
+                                            <option value="F">Femenino</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    @*<div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" id="sspeciality" placeholder="Especialidad">
+                                            </div>
+                                        </div>*@
+                                </div>
+                                <div class="col-sm-3">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="number" class="form-control" id="sphone" maxlength="9" placeholder="Telefono">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-9">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <input type="text" class="form-control" id="semail" placeholder="Email">
+                                        </div>
+                                    </div>
+                                </div>
+                                @*<div class="col-sm-12">
+                                        <div class="form-group">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control" id="swebSite" placeholder="Sitio Web">
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <form action="/" id="frmFileUpload" class="dropzone" method="post" enctype="multipart/form-data">
+                                        <div class="dz-message">
+                                            <div class="drag-icon-cph"> <i class="material-icons">touch_app</i> </div>
+                                            <h3>Drop files here or click to upload.</h3>
+                                            <em>(This is just a demo dropzone. Selected files are <strong>not</strong> actually uploaded.)</em>
+                                        </div>
+                                        <div class="fallback">
+                                            <input name="file" type="file" id="fileUploadDoctor" />
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <div class="form-line">
+                                            <textarea rows="4" class="form-control no-resize" id="resume" placeholder="Ingrese una descripción acerca del paciente..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnSavePatient" class="btn btn-raised btn-primary waves-effect">Guardar</button>
+                <button type="button" class="btn btn-raised btn-primary waves-effect" data-dismiss="modal">Salir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Doctor View-->
+<div class="modal fade" id="modalView" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            @*<div class="modal-header">
+                    <h4 class="modal-title" id="largeModalLabel">Agregar Doctor</h4>
+                </div>*@
+            <div class="modal-body" style="padding-bottom: 0px !important">
+                <div class="row clearfix">
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class=" card patient-profile">
+                            <img id="imageProfilePatient" style="width:200px; height:200px" class="img-fluid" alt="">
+                        </div>
+                        <div class="card">
+                            <div class="header">
+                                <h2>Acerca del Paciente</h2>
+                            </div>
+                            <div class="body">
+                                <strong>Nombre</strong>
+                                <p id="snameViewPatient"></p>
+                                <strong>Fecha Nacimiento</strong>
+                                <p id="dbirthdateViewPatient"></p>
+                                <strong>Email</strong>
+                                <p id="semailViewPatient"></p>
+                                <strong>Telefono</strong>
+                                <p id="sphoneViewPatient"></p>
+                                @*<strong>Web Site</strong>
+                                    <address>85 Bay Drive, New Port Richey, FL 34653</address>*@
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-sm-12">
+                        <div class="card">
+                            <div class="body">
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#report">Descripción</a></li>
+                                    @*<li class="nav-item"><a class="nav-link" data-toggle="tab" href="#timeline">Timeline</a></li>*@
+                                </ul>
+
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane in active" id="report">
+                                        <div class="wrap-reset">
+                                            <div class="mypost-list">
+                                                <div class="post-box">
+                                                    <p id="resumeViewPatient"></p>
+                                                </div>
+                                                @*<div class="post-box">
+                                                        <h4>General Report</h4>
+                                                        <div class="body p-l-0 p-r-0">
+                                                            <ul class="list-unstyled">
+                                                                <li>
+                                                                    <div>Blood Pressure</div>
+                                                                    <div class="progress m-b-20">
+                                                                        <div class="progress-bar bg-success progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%"> <span class="sr-only">40% Complete (success)</span> </div>
+                                                                    </div>
+                                                                </li>
+                                                                <li>
+                                                                    <div>Heart Beat</div>
+                                                                    <div class="progress  m-b-20">
+                                                                        <div class="progress-bar bg-info progress-bar-striped active" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 20%"> <span class="sr-only">20% Complete</span> </div>
+                                                                    </div>
+                                                                </li>
+                                                                <li>
+                                                                    <div>Haemoglobin</div>
+                                                                    <div class="progress  m-b-20">
+                                                                        <div class="progress-bar bg-warning progress-bar-striped active" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%"> <span class="sr-only">60% Complete (warning)</span> </div>
+                                                                    </div>
+                                                                </li>
+                                                                <li>
+                                                                    <div>Sugar</div>
+                                                                    <div class="progress">
+                                                                        <div class="progress-bar bg-danger progress-bar-striped active" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 80%"> <span class="sr-only">80% Complete (danger)</span> </div>
+                                                                    </div>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>*@
+                                                @*<hr>
+                                                    <h4>Education</h4>
+                                                    <ul class="dis">
+                                                        <li>B.Com from Ski University</li>
+                                                        <li>In hac habitasse platea dictumst.</li>
+                                                        <li>In hac habitasse platea dictumst.</li>
+                                                        <li>Vivamus elementum semper nisi.</li>
+                                                        <li>Praesent ac sem eget est egestas volutpat.</li>
+                                                    </ul>
+                                                    <hr>
+                                                    <h4>Past Visit History</h4>
+                                                    <ul class="dis">
+                                                        <li>Integer tincidunt.</li>
+                                                        <li>Praesent vestibulum dapibus nibh.</li>
+                                                        <li>Integer tincidunt.</li>
+                                                        <li>Praesent vestibulum dapibus nibh.</li>
+                                                        <li>Integer tincidunt.</li>
+                                                        <li>Praesent vestibulum dapibus nibh.</li>
+                                                    </ul>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*<div role="tabpanel" class="tab-pane" id="timeline">
+                                            <div class="timeline-body">
+                                                <div class="timeline m-border">
+                                                    <div class="timeline-item">
+                                                        <div class="item-content">
+                                                            <div class="text-small">Just now</div>
+                                                            <p>Discharge.</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="timeline-item border-info">
+                                                        <div class="item-content">
+                                                            <div class="text-small">11:30</div>
+                                                            <p>Routine Checkup</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="timeline-item border-warning border-l">
+                                                        <div class="item-content">
+                                                            <div class="text-small">10:30</div>
+                                                            <p>Operation </p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="timeline-item border-warning">
+                                                        <div class="item-content">
+                                                            <div class="text-small">3 days ago</div>
+                                                            <p>Routine Checkup</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="timeline-item border-danger">
+                                                        <div class="item-content">
+                                                            <div class="text--muted">Thu, 10 Mar</div>
+                                                            <p>Routine Checkup</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="timeline-item border-info">
+                                                        <div class="item-content">
+                                                            <div class="text-small">Sat, 5 Mar</div>
+                                                            <p>Routine Checkup</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="timeline-item border-danger">
+                                                        <div class="item-content">
+                                                            <div class="text-small">Sun, 11 Feb</div>
+                                                            <p>Blood checkup test</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="timeline-item border-info">
+                                                        <div class="item-content">
+                                                            <div class="text-small">Thu, 17 Jan</div>
+                                                            <p>Admit patient ward no. 21</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding-top: 0px !important">
+                <button type="button" class="btn btn-raised btn-primary waves-effect" data-dismiss="modal">Salir</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/assets/plugins/autosize/autosize.js"></script> <!-- Autosize Plugin Js -->
+<script src="~/assets/plugins/momentjs/moment.js"></script> <!-- Moment Plugin Js -->
+<script src="~/assets/plugins/dropzone/dropzone.js"></script> <!-- Dropzone Plugin Js -->
+<script src="~/assets/plugins/bootstrap-material-datetimepicker/js/bootstrap-material-datetimepicker.js"></script>
+<script src="~/assets/plugins/fullcalendar/lang/es.js"></script>
+
+<script src="~/assets/bundles/datatablescripts.bundle.js"></script><!-- Jquery DataTable Plugin Js -->
+
+<script src="~/assets/js/morphing.js"></script><!-- Custom Js -->
+<script src="~/assets/js/pages/tables/jquery-datatable.js"></script>
+
+<script src="~/assets/plugins/bootstrap-notify/bootstrap-notify.js"></script> <!-- Bootstrap Notify Plugin Js -->
+<script src="~/assets/plugins/sweetalert/sweetalert.min.js"></script> <!-- SweetAlert Plugin Js -->
+
+<script src="~/js/Patient.js"></script>
